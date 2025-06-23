@@ -1,24 +1,125 @@
 /* chessboard.css */
 
-.chessboard-container {
-    background-color: #f0f0f0;
+:root {
+    --light-square: #f0d9b5;
+    --dark-square: #b58863;
+    --selected-square: #7b9fd6;
+    --legal-move: rgba(0, 255, 127, 0.5);
+    --hover-square: rgba(255, 255, 0, 0.3);
+}
+
+.chess-game {
     display: flex;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
     justify-content: center;
-    height: 100vh;
+    padding: 20px;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 600px;
+}
+
+.chessboard-with-labels {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 0 auto;
+    padding-left: 30px; /* Space for rank labels */
 }
 
 .chessboard {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    width: 400px;
-    height: 400px;
+    display: flex;
+    flex-direction: column;
+    width: 480px;
+    height: 480px;
     background-color: #eee;
-    margin: auto; /* Added margin:auto to center the chessboard */
+    border: 10px solid #5d4037;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    box-sizing: content-box;
+    transition: transform 1s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
 }
 
-/* chessboard.css */
+.chessboard.rotated {
+    transform: rotate(180deg);
+}
+
+.chessboard.rotated .chess-piece {
+    transform: rotate(180deg);
+}
+
+.chessboard.rotated .rank-label {
+    transform: rotate(180deg);
+}
+
+.file-labels.rotated {
+    transform: rotate(180deg);
+}
+
+.file-labels.rotated .file-label {
+    transform: rotate(180deg);
+}
+
+/* Fix for selected pieces and legal moves during rotation */
+.chessboard.rotated .square.selected::before,
+.chessboard.rotated .square.legal-move::before {
+    transform: rotate(180deg);
+}
+
+.chessboard.rotating {
+    transform: rotate(180deg);
+}
+
+/* Make sure all pieces rotate with the board */
+.chessboard .chess-piece {
+    transition: transform 1s ease;
+}
+
+.chessboard.rotating .chess-piece {
+    transform: rotate(180deg);
+}
+
+.board-row {
+    display: flex;
+    flex-direction: row;
+    height: 60px;
+    position: relative;
+}
+
+.rank-label {
+    width: 20px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #5d4037;
+    position: absolute;
+    left: -30px; /* Moved further left to avoid border clipping */
+}
+
+.file-labels {
+    display: flex;
+    height: 20px;
+    margin-top: 10px;
+}
+
+.empty-corner {
+    width: 30px; /* Match the width of rank labels */
+}
+
+.file-label {
+    width: 60px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #5d4037;
+    flex: 1;
+}
 
 .square {
     width: 60px;
@@ -28,57 +129,354 @@
     justify-content: center;
     font-size: 1.2em;
     cursor: pointer;
+    position: relative;
     transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    flex: 1;
+    box-sizing: border-box;
 }
 
 .square:hover {
-    background-color: #c0c0c0; /* Light gray color on hover */
+    background-color: var(--hover-square);
 }
 
 .square.selected {
-    background-color: #a0a0a0; /* Darker gray color when selected */
+    background-color: rgba(123, 159, 214, 0.8) !important;
 }
 
-.square.legal-move {
-    background-color: #78b788; /* Darker gray color for legal moves */
+.square.legal-move::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 255, 0, 0.5);
+    z-index: 1;
+    pointer-events: none; /* Make sure clicks go through to the square */
 }
 
 .chess-piece {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
     object-fit: contain;
-    transition: transform 0.5s ease-in-out;
-    cursor: grab; /* Set cursor to 'grab' for draggable pieces */
+    transition: transform 1s ease;
+    cursor: grab;
+    z-index: 2;
 }
 
 .dragging {
-    opacity: 0.5; /* Adjust opacity for the dragging effect */
-    cursor: grabbing; /* Set cursor to 'grabbing' during drag */
+    opacity: 0.5;
+    cursor: grabbing;
 }
 
-/* Optional: Add a scale effect to pieces on hover */
 .square:hover .chess-piece {
     transform: scale(1.1);
 }
 
-.square.move-animation {
-    transition: transform 0.5s ease-in-out; /* Adjusted transition for the move animation */
+.chessboard.rotated .square:hover .chess-piece {
+    transform: rotate(180deg) scale(1.1);
 }
 
+.chessboard.rotating .square:hover .chess-piece {
+    transform: rotate(180deg);
+}
+
+.square.move-animation {
+    transition: transform 0.5s ease-in-out;
+}
 
 .dark {
-    background-color: #8b4513; /* Adjust the color as needed */
+    background-color: var(--dark-square);
 }
 
 .light {
-    background-color: #deb887; /* Adjust the color as needed */
+    background-color: var(--light-square);
 }
 
-.selected {
-    background-color: #7fffd4; /* Adjust the color for the selected square */
+/* Game info styles */
+.game-info {
+    min-width: 250px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.legal-move {
-    background-color: #00ff7f; /* Adjust the color for legal moves */
+.status {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    text-align: center;
 }
 
+.captured-pieces {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #e8e8e8;
+    border-radius: 4px;
+}
+
+.captured-white, .captured-black {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.captured-piece {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
+
+.move-history {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #e8e8e8;
+    border-radius: 4px;
+}
+
+.move-history h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.moves-list {
+    font-family: monospace;
+    line-height: 1.5;
+}
+
+.move {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.reset-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.reset-button:hover {
+    background-color: #45a049;
+}
+/* Promotion dialog styles */
+.promotion-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid #5d4037;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    text-align: center;
+    width: 300px;
+}
+
+.promotion-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #5d4037;
+}
+
+.promotion-options {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.promotion-option {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.promotion-option:hover {
+    background-color: #f0f0f0;
+}
+
+.promotion-piece {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.chessboard-with-labels {
+    position: relative;
+}
+/* Highlight last move */
+.square.last-move-from {
+    background-color: rgba(255, 255, 0, 0.3) !important;
+}
+
+.square.last-move-to {
+    background-color: rgba(255, 255, 0, 0.5) !important;
+}
+
+/* Highlight king in check */
+.square.king-in-check {
+    background-color: rgba(255, 0, 0, 0.5) !important;
+}
+
+/* Ensure the check highlight is visible */
+.square.king-in-check .chess-piece {
+    filter: drop-shadow(0 0 5px red);
+}
+/* Dragging styles */
+.dragging-piece {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
+/* Move history styles */
+.move-history-container {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.move-history-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.move-history-list {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 5px;
+  font-family: monospace;
+}
+
+.move-number {
+  font-weight: bold;
+  color: #555;
+}
+
+.move-white, .move-black {
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.move-white {
+  background-color: #f0f0f0;
+}
+
+.move-black {
+  background-color: #e0e0e0;
+}
+
+/* Captured pieces and score styles */
+.captured-pieces-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.captured-pieces-white, .captured-pieces-black {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.captured-piece-img {
+  width: 25px;
+  height: 25px;
+}
+
+.score {
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.score-white {
+  color: #333;
+}
+
+.score-black {
+  color: #333;
+}
+
+/* Improved game info styles */
+.game-info {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
+}
+
+.status {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+  border-radius: 5px;
+  background: linear-gradient(to right, #f0f0f0, #e0e0e0);
+}
+
+.status.check {
+  background: linear-gradient(to right, #ffcccc, #ff9999);
+  color: #cc0000;
+}
+
+.status.checkmate {
+  background: linear-gradient(to right, #ffaaaa, #ff5555);
+  color: #990000;
+}
+
+.status.stalemate {
+  background: linear-gradient(to right, #ccccff, #9999ff);
+  color: #0000cc;
+}
+
+.reset-button {
+  background: linear-gradient(to right, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s;
+}
+
+.reset-button:hover {
+  background: linear-gradient(to right, #45a049, #3d8b3d);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
