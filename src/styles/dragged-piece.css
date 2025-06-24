@@ -1,0 +1,15 @@
+#dragged-piece {
+  position: fixed;
+  width: 70px;
+  height: 70px;
+  transform: translate(-50%, -50%);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  z-index: 9999;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+  opacity: 1;
+  will-change: left, top;
+  cursor: grabbing;
+}

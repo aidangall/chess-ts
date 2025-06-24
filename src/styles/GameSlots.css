@@ -1,0 +1,209 @@
+/* GameSlots.css */
+.game-slots {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.game-slots h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--primary-color);
+}
+
+.create-game {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.create-game:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.create-game h3 {
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.create-game form {
+  display: flex;
+  gap: 10px;
+}
+
+.create-game input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.create-game input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.create-game button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-game button:hover {
+  background-color: var(--primary-dark);
+}
+
+.slots-list {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slots-list h3 {
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.no-games {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 20px;
+}
+
+.slots-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.slots-list th {
+  background-color: #f5f5f5;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.slots-list td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.game-slot:hover {
+  background-color: #f9f9f9;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.status-badge.empty {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.status-badge.waiting {
+  background-color: #fff3cd;
+  color: #856404;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.status-badge.active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.finished {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.player {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.player.white {
+  color: #212121;
+}
+
+.player.black {
+  color: #212121;
+  font-weight: bold;
+}
+
+.empty-slot {
+  color: #aaa;
+  font-style: italic;
+}
+
+.join-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.join-white, .join-black, .view-game {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.join-white {
+  background-color: #f8f9fa;
+  color: #212121;
+  border: 1px solid #dee2e6;
+}
+
+.join-black {
+  background-color: #343a40;
+  color: white;
+}
+
+.view-game {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.join-white:hover, .join-black:hover, .view-game:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .create-game form {
+    flex-direction: column;
+  }
+  
+  .slots-list {
+    overflow-x: auto;
+  }
+  
+  .join-buttons {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,249 @@
+/* Chessboard.css */
+.chessboard-container {
+  display: flex;
+  position: relative;
+}
+
+.rank-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-right: 10px;
+}
+
+.rank-label {
+  height: 12.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.board-and-files {
+  display: flex;
+  flex-direction: column;
+}
+
+.chessboard {
+  width: 480px;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  transition: transform 0.5s ease;
+}
+
+/* Add a subtle indicator when the board is flipped */
+.chessboard-container[data-flipped="true"] .chessboard {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: #555;
+}
+
+.board-row {
+  display: flex;
+  height: 12.5%;
+}
+
+.square {
+  width: 12.5%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.square.light {
+  background-color: var(--light-square);
+}
+
+.square.dark {
+  background-color: var(--dark-square);
+}
+
+.square.selected {
+  background-color: var(--selected-square);
+  box-shadow: inset 0 0 0 4px rgba(255, 215, 0, 0.8); /* Golden highlight */
+  animation: selected-pulse 2s infinite;
+}
+
+@keyframes selected-pulse {
+  0% { box-shadow: inset 0 0 0 3px rgba(255, 215, 0, 0.7); }
+  50% { box-shadow: inset 0 0 0 4px rgba(255, 215, 0, 0.9); }
+  100% { box-shadow: inset 0 0 0 3px rgba(255, 215, 0, 0.7); }
+}
+
+.square.last-move-from,
+.square.last-move-to {
+  background-color: var(--last-move);
+}
+
+.square.check {
+  background-color: var(--check);
+}
+
+.piece {
+  width: 90%;
+  height: 90%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  z-index: 1;
+  user-select: none;
+}
+
+.square:hover .piece {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+/* Style for pieces that can be moved */
+.piece.movable {
+  cursor: pointer;
+  filter: brightness(1.05);
+}
+
+.piece.movable:hover {
+  transform: scale(1.15);
+  filter: brightness(1.2);
+}
+
+/* Style for opponent's pieces */
+.piece.opponent {
+  cursor: not-allowed;
+  filter: brightness(0.95);
+}
+
+.piece.opponent:hover {
+  transform: none;
+  filter: brightness(0.95);
+}
+
+/* Animating piece */
+.animating-piece {
+  position: absolute;
+  width: 12.5%;
+  height: 12.5%;
+  background-size: 90% 90%;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 10;
+  pointer-events: none;
+  animation: move-piece 0.4s ease-in-out forwards;
+  will-change: transform;
+}
+
+@keyframes move-piece {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(calc(var(--dx) * 100%), calc(var(--dy) * 100%));
+  }
+}
+
+.legal-move-indicator {
+  position: absolute;
+  width: 35%;
+  height: 35%;
+  border-radius: 50%;
+  background-color: rgba(0, 128, 0, 0.5); /* Semi-transparent green */
+  z-index: 0;
+  animation: pulse 1.5s infinite;
+  pointer-events: none; /* Make sure it doesn't interfere with clicks */
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.6; transform: scale(0.9); }
+}
+
+/* Style for legal move indicators on squares with pieces (capture) */
+.square:has(.piece) .legal-move-indicator {
+  width: 90%;
+  height: 90%;
+  border: 3px solid rgba(0, 128, 0, 0.7);
+  background-color: transparent;
+  animation: capture-pulse 1.5s infinite;
+}
+
+@keyframes capture-pulse {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.6; transform: scale(0.95); }
+}
+
+/* Fallback for browsers that don't support :has */
+.square.legal-move:has(.piece) {
+  position: relative;
+}
+
+.square.legal-move:has(.piece)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 3px solid rgba(0, 128, 0, 0.7);
+  pointer-events: none;
+  animation: capture-pulse 1.5s infinite;
+}
+
+.file-labels {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+}
+
+.file-label {
+  width: 12.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.promotion-dialog {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 12.5%;
+  background-color: white;
+  border: 2px solid #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.promotion-option {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.promotion-option:hover {
+  background-color: var(--primary-light);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chessboard {
+    width: 320px;
+    height: 320px;
+  }
+  
+  .promotion-option {
+    height: 40px;
+  }
+}

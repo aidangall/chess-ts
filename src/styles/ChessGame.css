@@ -1,0 +1,155 @@
+/* ChessGame.css */
+.chess-game {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-header h2 {
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.players-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+.player {
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-weight: bold;
+  min-width: 120px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.player.white {
+  background-color: #f8f9fa;
+  color: #212121;
+  border: 1px solid #dee2e6;
+}
+
+.player.black {
+  background-color: #343a40;
+  color: white;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.vs {
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.you-indicator {
+  margin-left: 5px;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 10px;
+  animation: pulse-indicator 2s infinite;
+}
+
+@keyframes pulse-indicator {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.game-container {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}
+
+.board-and-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.exit-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exit-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.game-status {
+  margin-top: 10px;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.status.waiting {
+  background-color: #fff3cd;
+  color: #856404;
+  animation: pulse 2s infinite;
+}
+
+.status.active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.checkmate,
+.status.resigned {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status.stalemate,
+.status.draw {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .players-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .vs {
+    display: none;
+  }
+}
