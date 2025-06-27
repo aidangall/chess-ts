@@ -199,7 +199,7 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, player, onExit }) => {
   return (
     <div className="chess-game">
       <div className="game-header">
-        <h2>Chess Game: {gameId}</h2>
+        <div className="game-id">Game ID: {gameId}</div>
         <div className="players-info">
           <div className="player white">
             {gameState.players.white ? gameState.players.white.name : 'Waiting for player...'}

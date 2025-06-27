@@ -2,27 +2,56 @@
 .chessboard-container {
   display: flex;
   position: relative;
+  opacity: 0;
+  animation: fadeIn 0.6s 0.2s forwards;
+
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .rank-labels {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  padding-right: 10px;
+  justify-content: space-between;
+  padding-right: 12px;
+  opacity: 0.8;
+  transition: opacity var(--transition-medium);
+  height: 480px;
+  /* Match the height of the chessboard */
+}
+
+.chessboard-container:hover .rank-labels {
+  opacity: 1;
 }
 
 .rank-label {
-  height: 12.5%;
+  height: 60px;
+  /* 480px / 8 = 60px per square */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 600;
   color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: all var(--transition-medium);
+}
+
+.chessboard-container:hover .rank-label {
+  color: var(--text-color);
 }
 
 .board-and-files {
   display: flex;
   flex-direction: column;
+  transition: all var(--transition-medium);
 }
 
 .chessboard {
@@ -31,15 +60,18 @@
   display: flex;
   flex-direction: column;
   border: 2px solid #333;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   position: relative;
-  transition: transform 0.5s ease;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all var(--transition-medium);
 }
 
 /* Add a subtle indicator when the board is flipped */
 .chessboard-container[data-flipped="true"] .chessboard {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
   border-color: #555;
+  transform: scale(1.01);
 }
 
 .board-row {
@@ -54,7 +86,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
 .square.light {
@@ -67,14 +99,22 @@
 
 .square.selected {
   background-color: var(--selected-square);
-  box-shadow: inset 0 0 0 4px rgba(255, 215, 0, 0.8); /* Golden highlight */
+  box-shadow: inset 0 0 0 3px rgba(92, 107, 192, 0.8);
   animation: selected-pulse 2s infinite;
 }
 
 @keyframes selected-pulse {
-  0% { box-shadow: inset 0 0 0 3px rgba(255, 215, 0, 0.7); }
-  50% { box-shadow: inset 0 0 0 4px rgba(255, 215, 0, 0.9); }
-  100% { box-shadow: inset 0 0 0 3px rgba(255, 215, 0, 0.7); }
+  0% {
+    box-shadow: inset 0 0 0 2px rgba(92, 107, 192, 0.7);
+  }
+
+  50% {
+    box-shadow: inset 0 0 0 3px rgba(92, 107, 192, 0.9);
+  }
+
+  100% {
+    box-shadow: inset 0 0 0 2px rgba(92, 107, 192, 0.7);
+  }
 }
 
 .square.last-move-from,
@@ -87,41 +127,42 @@
 }
 
 .piece {
-  width: 90%;
-  height: 90%;
+  width: 85%;
+  height: 85%;
   background-size: contain;
+  transition: all var(--transition-fast);
   background-repeat: no-repeat;
   background-position: center;
-  transition: transform 0.2s ease, filter 0.2s ease;
   z-index: 1;
   user-select: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
 }
 
 .square:hover .piece {
-  transform: scale(1.1);
-  filter: brightness(1.1);
+  transform: scale(1.08);
+  filter: brightness(1.1) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
 }
 
 /* Style for pieces that can be moved */
 .piece.movable {
   cursor: pointer;
-  filter: brightness(1.05);
+  filter: brightness(1.05) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
 }
 
 .piece.movable:hover {
-  transform: scale(1.15);
-  filter: brightness(1.2);
+  transform: scale(1.12);
+  filter: brightness(1.2) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 
 /* Style for opponent's pieces */
 .piece.opponent {
   cursor: not-allowed;
-  filter: brightness(0.95);
+  filter: brightness(0.95) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
 }
 
 .piece.opponent:hover {
   transform: none;
-  filter: brightness(0.95);
+  filter: brightness(0.95) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
 }
 
 /* Animating piece */
@@ -129,6 +170,7 @@
   position: absolute;
   width: 12.5%;
   height: 12.5%;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
   background-size: 90% 90%;
   background-repeat: no-repeat;
   background-position: center;
@@ -141,42 +183,77 @@
 @keyframes move-piece {
   0% {
     transform: translate(0, 0);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
   }
+
   100% {
     transform: translate(calc(var(--dx) * 100%), calc(var(--dy) * 100%));
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
   }
 }
 
 .legal-move-indicator {
   position: absolute;
-  width: 35%;
-  height: 35%;
+  width: 30%;
+  height: 30%;
   border-radius: 50%;
-  background-color: rgba(0, 128, 0, 0.5); /* Semi-transparent green */
+  background-color: rgba(76, 175, 80, 0.6);
+  /* Semi-transparent green */
   z-index: 0;
   animation: pulse 1.5s infinite;
-  pointer-events: none; /* Make sure it doesn't interfere with clicks */
+  pointer-events: none;
+  /* Make sure it doesn't interfere with clicks */
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.1); }
-  100% { opacity: 0.6; transform: scale(0.9); }
+  0% {
+    opacity: 0.6;
+    transform: scale(0.9);
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+  }
+
+  100% {
+    opacity: 0.6;
+    transform: scale(0.9);
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+  }
 }
 
 /* Style for legal move indicators on squares with pieces (capture) */
 .square:has(.piece) .legal-move-indicator {
   width: 90%;
   height: 90%;
-  border: 3px solid rgba(0, 128, 0, 0.7);
+  border: 2px solid rgba(76, 175, 80, 0.7);
   background-color: transparent;
   animation: capture-pulse 1.5s infinite;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
 }
 
 @keyframes capture-pulse {
-  0% { opacity: 0.6; transform: scale(0.95); }
-  50% { opacity: 1; transform: scale(1.05); }
-  100% { opacity: 0.6; transform: scale(0.95); }
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.5);
+  }
+
+  100% {
+    opacity: 0.6;
+    transform: scale(0.95);
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+  }
 }
 
 /* Fallback for browsers that don't support :has */
@@ -191,24 +268,40 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border: 3px solid rgba(0, 128, 0, 0.7);
+  border: 2px solid rgba(76, 175, 80, 0.7);
   pointer-events: none;
   animation: capture-pulse 1.5s infinite;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
 }
 
 .file-labels {
   display: flex;
-  justify-content: space-around;
-  padding-top: 10px;
+  justify-content: space-between;
+  padding-top: 12px;
+  opacity: 0.8;
+  transition: opacity var(--transition-medium);
+  width: 480px;
+  /* Match the width of the chessboard */
+}
+
+.chessboard-container:hover .file-labels {
+  opacity: 1;
 }
 
 .file-label {
-  width: 12.5%;
+  width: 60px;
+  /* 480px / 8 = 60px per square */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 600;
   color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: all var(--transition-medium);
+}
+
+.chessboard-container:hover .file-label {
+  color: var(--text-color);
 }
 
 .promotion-dialog {
@@ -217,8 +310,11 @@
   flex-direction: column;
   width: 12.5%;
   background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
   border: 2px solid #333;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
   z-index: 100;
 }
 
@@ -229,11 +325,14 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all var(--transition-fast);
+  background-color: white;
 }
 
 .promotion-option:hover {
   background-color: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive adjustments */
@@ -242,8 +341,78 @@
     width: 320px;
     height: 320px;
   }
-  
+
+  .rank-labels {
+    height: 320px;
+  }
+
+  .rank-label {
+    height: 40px;
+    /* 320px / 8 = 40px per square */
+  }
+
+  .file-labels {
+    width: 320px;
+  }
+
+  .file-label {
+    width: 40px;
+    /* 320px / 8 = 40px per square */
+  }
+
   .promotion-option {
     height: 40px;
+  }
+
+  .rank-label,
+  .file-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chessboard {
+    width: 280px;
+    height: 280px;
+  }
+
+  .rank-labels {
+    padding-right: 8px;
+    height: 280px;
+  }
+
+  .rank-label {
+    height: 35px;
+    /* 280px / 8 = 35px per square */
+  }
+
+  .file-labels {
+    padding-top: 8px;
+    width: 280px;
+  }
+
+  .file-label {
+    width: 35px;
+    /* 280px / 8 = 35px per square */
+  }
+}
+
+@m edia (max-width: 480px) {
+  .chessboard {
+    width: 280px;
+    height: 280px;
+  }
+
+  .rank-labels {
+    padding-right: 8px;
+  }
+
+  .file-labels {
+    padding-top: 8px;
+  }
+
+  .rank-label,
+  .file-label {
+    font-size: 0.75rem;
   }
 }

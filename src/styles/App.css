@@ -1,20 +1,37 @@
 /* App.css */
 :root {
-  --primary-color: #3f51b5;
-  --primary-dark: #303f9f;
-  --primary-light: #c5cae9;
-  --accent-color: #ff4081;
-  --text-color: #212121;
-  --text-secondary: #757575;
-  --background-color: #f5f5f5;
+  /* Classic chess-inspired color palette */
+  --primary-color: #7b5d3f; /* Rich brown */
+  --primary-dark: #5d4529; /* Dark brown */
+  --primary-light: #d7c9b8; /* Light beige */
+  --accent-color: #a23e48; /* Deep burgundy red */
+  --text-color: #2c2522; /* Dark brown-black */
+  --text-secondary: #6e5c4e; /* Medium brown */
+  --background-color: #f5f1e8; /* Warm off-white */
+  
+  /* Chess board colors - traditional */
   --white-piece-color: #fff;
   --black-piece-color: #000;
-  --light-square: #f0d9b5;
-  --dark-square: #b58863;
-  --selected-square: #7b9fd6;
-  --legal-move: rgba(0, 255, 0, 0.4);
-  --last-move: rgba(255, 255, 0, 0.3);
-  --check: rgba(255, 0, 0, 0.4);
+  --light-square: #f0d9b5; /* Classic light square */
+  --dark-square: #b58863; /* Classic dark square */
+  
+  /* Game indicators */
+  --selected-square: rgba(162, 62, 72, 0.6); /* Burgundy highlight */
+  --legal-move: rgba(123, 93, 63, 0.5); /* Brown indicator */
+  --last-move: rgba(173, 139, 94, 0.4); /* Gold highlight */
+  --check: rgba(162, 62, 72, 0.5); /* Burgundy alert */
+  
+  /* UI elements */
+  --card-bg: #ffffff;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  
+  /* Transitions and spacing */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --border-radius-sm: 6px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
 }
 
 * {
@@ -23,52 +40,112 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--background-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: 
+    linear-gradient(rgba(245, 241, 232, 0.9), rgba(245, 241, 232, 0.9)),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" width="100" height="100"/><path d="M20,20L80,80M80,20L20,80" stroke="rgba(123, 93, 63, 0.05)" stroke-width="1"/></svg>');
+  background-size: cover, 50px 50px;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+  transition: all var(--transition-medium);
 }
 
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--background-color);
 }
 
 .app-header {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 1rem 2rem;
+  background: linear-gradient(to right, var(--primary-dark), var(--primary-color), var(--primary-dark));
+  color: #f5f1e8;
+  padding: 1.2rem 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid rgba(215, 201, 184, 0.3);
 }
 
 .app-header h1 {
   margin: 0;
   font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  animation: fadeSlideIn 0.6s ease forwards;
 }
 
 .user-info {
   font-size: 1rem;
+  font-weight: 500;
+  background-color: rgba(245, 241, 232, 0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all var(--transition-medium);
+  opacity: 0;
+  animation: fadeSlideIn 0.6s 0.2s ease forwards;
+  border: 1px solid rgba(215, 201, 184, 0.3);
+}
+
+.user-info:hover {
+  background-color: rgba(245, 241, 232, 0.25);
 }
 
 main {
   flex: 1;
-  padding: 2rem;
+  padding: 2.5rem;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  opacity: 0;
+  animation: fadeIn 0.8s 0.3s ease forwards;
 }
 
 .app-footer {
-  background-color: var(--primary-dark);
-  color: white;
+  background: linear-gradient(to right, var(--primary-dark), var(--primary-color), var(--primary-dark));
+  color: #f5f1e8;
   text-align: center;
-  padding: 1rem;
+  padding: 1.2rem;
   margin-top: auto;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  border-top: 1px solid rgba(215, 201, 184, 0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Name input form */
@@ -77,50 +154,98 @@ main {
   justify-content: center;
   align-items: center;
   height: 80vh;
+  padding: 1rem;
 }
 
 .name-form {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--light-square);
+  padding: 2.5rem;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 8px 30px rgba(123, 93, 63, 0.15);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   text-align: center;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideUpFade 0.6s 0.2s ease forwards;
+  border: 1px solid rgba(181, 136, 99, 0.2);
+}
+
+@keyframes slideUpFade {
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .name-form h2 {
   margin-bottom: 1rem;
   color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.8rem;
 }
 
 .name-form p {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
   color: var(--text-secondary);
+  font-size: 1.05rem;
 }
 
 .name-form input {
   width: 100%;
-  padding: 0.8rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--primary-light);
+  border-radius: var(--border-radius-sm);
   font-size: 1rem;
+  transition: all var(--transition-fast);
+  background-color: rgba(255, 255, 255, 0.8);
+  color: var(--text-color);
+}
+
+.name-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(123, 93, 63, 0.2);
+  background-color: white;
 }
 
 .name-form button {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 4px;
+  padding: 0.9rem 1.8rem;
+  border-radius: var(--border-radius-sm);
   font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  font-weight: 500;
+  transition: all var(--transition-medium);
+  box-shadow: 0 4px 10px rgba(92, 107, 192, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.name-form button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
 }
 
 .name-form button:hover {
   background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(123, 93, 63, 0.4);
+}
+
+.name-form button:hover::after {
+  transform: translateX(100%);
+}
+
+.name-form button:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(123, 93, 63, 0.3);
 }
 
 /* Responsive adjustments */
