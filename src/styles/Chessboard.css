@@ -397,7 +397,7 @@
   }
 }
 
-@m edia (max-width: 480px) {
+@media (max-width: 480px) {
   .chessboard {
     width: 280px;
     height: 280px;
