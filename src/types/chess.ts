@@ -30,6 +30,8 @@ export interface Player {
   color?: PieceColor;
 }
 
+export type Position = string; // FEN-like string representation of the board position
+
 export interface GameState {
   id: string;
   board: (Piece | null)[][];
@@ -50,6 +52,9 @@ export interface GameState {
   lastMove: Move | null;
   drawOffered: PieceColor | null;
   winner: PieceColor | null;
+  positionHistory: Position[]; // For threefold repetition detection
+  halfMoveClock: number; // For fifty-move rule detection
+  enPassantTarget: Square | null; // For en passant detection
 }
 
 export interface GameSlot {

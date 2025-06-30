@@ -37,8 +37,21 @@ const Chessboard: React.FC<ChessboardProps> = ({ gameState, onMove, flipped = fa
 
   // Handle square click
   const handleSquareClick = (x: number, y: number) => {
-    // If waiting for promotion choice, ignore clicks
+    // If waiting for promotion choice or game is over, ignore clicks
     if (promotionSquare) return;
+    
+    // Check if game is over
+    const isGameOver = gameState.status === 'checkmate' || 
+                      gameState.status === 'stalemate' || 
+                      gameState.status === 'draw' || 
+                      gameState.status === 'resigned';
+    
+    console.log('Current game status:', gameState.status, 'Is game over?', isGameOver);
+    
+    if (isGameOver) {
+      console.log('Game is over, ignoring click');
+      return;
+    }
 
     const piece = board[x][y];
 
@@ -120,8 +133,10 @@ const Chessboard: React.FC<ChessboardProps> = ({ gameState, onMove, flipped = fa
         setTimeout(() => {
           // Make the move
           const updatedGameState = makeMove(gameState, [selectedX, selectedY], [x, y]);
-          onMove(updatedGameState);
           console.log(`Moved piece from ${selectedX},${selectedY} to ${x},${y}`);
+          console.log('Game status after move in Chessboard:', updatedGameState.status);
+          
+          onMove(updatedGameState);
           
           // Clear the animation after a short delay
           setTimeout(() => {

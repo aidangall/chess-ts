@@ -4,7 +4,7 @@ import GameControls from './components/GameControls';
 import GameInfo from './components/GameInfo';
 import { GameState, Player, PieceColor } from './types/chess';
 import { createNewGame, offerDraw, acceptDraw, declineDraw, resignGame } from './utils/chessLogic';
-import { makeMove as emitMove, onMoveMade, onGameJoined, onGameData, joinGame as emitJoinGame, getGame, reconnectToGame } from './utils/socketUtils';
+import { makeMove as emitMove, onMoveMade, onGameJoined, onGameData, joinGame as emitJoinGame, getGame, reconnectToGame, deleteGame as emitDeleteGame } from './utils/socketUtils';
 import './styles/ChessGame.css';
 
 interface ChessGameProps {
@@ -119,7 +119,15 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, player, onExit }) => {
     const handleMoveMade = ({ gameId: movedGameId, gameState: updatedGameState }: { gameId: string, gameState: GameState }) => {
       if (movedGameId === gameId) {
         console.log('Move made:', updatedGameState);
-        setGameState(updatedGameState);
+        console.log('Game status from server:', updatedGameState.status);
+        
+        // Make sure we preserve player information
+        const finalGameState = {
+          ...updatedGameState,
+          players: updatedGameState.players || gameState.players
+        };
+        
+        setGameState(finalGameState);
       }
     };
     
@@ -150,6 +158,12 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, player, onExit }) => {
       players: gameState.players // Keep the existing player information
     };
     
+    // Log the game status for debugging
+    console.log('Game status after move:', updatedGameState.status);
+    console.log('Is checkmate?', updatedGameState.status === 'checkmate');
+    console.log('Is stalemate?', updatedGameState.status === 'stalemate');
+    console.log('Is draw?', updatedGameState.status === 'draw');
+    
     // Update local state
     setGameState(updatedGameState);
     
@@ -161,25 +175,39 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, player, onExit }) => {
   const handleResign = () => {
     if (!playerColor) return;
     const newGameState = resignGame(gameState, playerColor);
+    console.log('Game status after resign:', newGameState.status);
     setGameState(newGameState);
+    
+    // Send updated game state to server
+    emitMove(gameId, newGameState);
   };
   
   // Handle draw offer
   const handleOfferDraw = () => {
     const newGameState = offerDraw(gameState);
     setGameState(newGameState);
+    
+    // Send updated game state to server
+    emitMove(gameId, newGameState);
   };
   
   // Handle accept draw
   const handleAcceptDraw = () => {
     const newGameState = acceptDraw(gameState);
+    console.log('Game status after accepting draw:', newGameState.status);
     setGameState(newGameState);
+    
+    // Send updated game state to server
+    emitMove(gameId, newGameState);
   };
   
   // Handle decline draw
   const handleDeclineDraw = () => {
     const newGameState = declineDraw(gameState);
     setGameState(newGameState);
+    
+    // Send updated game state to server
+    emitMove(gameId, newGameState);
   };
   
   // Handle flip board
@@ -193,6 +221,13 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, player, onExit }) => {
   // Handle new game
   const handleNewGame = () => {
     // In a real app, we would create a new game on the server
+    onExit();
+  };
+  
+  // Handle delete game
+  const handleDeleteGame = () => {
+    // Delete the game from the server
+    emitDeleteGame(gameId);
     onExit();
   };
   
@@ -243,9 +278,17 @@ const ChessGame: React.FC<ChessGameProps> = ({ gameId, player, onExit }) => {
       </div>
       
       <div className="game-footer">
-        <button className="exit-button" onClick={onExit}>
-          Back to Game List
-        </button>
+        <div className="footer-buttons">
+          <button className="exit-button" onClick={onExit}>
+            Back to Game List
+          </button>
+          {(gameState.status === 'checkmate' || gameState.status === 'stalemate' || 
+            gameState.status === 'draw' || gameState.status === 'resigned') && (
+            <button className="delete-button" onClick={handleDeleteGame}>
+              Delete Game
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

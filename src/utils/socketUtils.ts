@@ -75,3 +75,11 @@ export const disconnectSocket = (): void => {
     socket.disconnect();
   }
 };
+
+export const deleteGame = (gameId: string): void => {
+  getSocket().emit('deleteGame', { gameId });
+};
+
+export const onGameDeleted = (callback: (gameId: string) => void): void => {
+  getSocket().on('gameDeleted', callback);
+};

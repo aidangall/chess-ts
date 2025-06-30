@@ -9,6 +9,7 @@ import {
   onGameSlots, 
   onGameCreated, 
   onGameUpdated, 
+  onGameDeleted,
   createGame as emitCreateGame,
   joinGame as emitJoinGame
 } from './utils/socketUtils';
@@ -55,6 +56,17 @@ const App: React.FC = () => {
       setGameSlots(prev => 
         prev.map(game => game.id === updatedGame.id ? updatedGame : game)
       );
+    });
+    
+    // Listen for game deletions
+    onGameDeleted((deletedGameId) => {
+      console.log('Game deleted:', deletedGameId);
+      setGameSlots(prev => prev.filter(game => game.id !== deletedGameId));
+      
+      // If the deleted game was the active game, go back to the game list
+      if (activeGameId === deletedGameId) {
+        setActiveGameId(null);
+      }
     });
     
     // Cleanup function to disconnect socket when component unmounts

@@ -29,6 +29,8 @@ const GameControls: React.FC<GameControlsProps> = ({
   
   // Determine status message
   const getStatusMessage = () => {
+    console.log('GameControls - Current status:', status);
+    
     switch (status) {
       case 'checkmate':
         return `Checkmate! ${gameState.winner === 'white' ? 'White' : 'Black'} wins`;
